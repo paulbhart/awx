@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { t } from '@lingui/macro';
 import { withI18n } from '@lingui/react';
-import { Card, PageSection } from '@patternfly/react-core';
+import { Card, CardActions, PageSection } from '@patternfly/react-core';
 import {
   Switch,
   Route,
@@ -37,7 +37,6 @@ function Inventory({ i18n, setBreadcrumb }) {
   useEffect(() => {
     async function fetchData() {
       try {
-        setHasContentLoading(true);
         const { data } = await InventoriesAPI.readDetail(match.params.id);
         setBreadcrumb(data);
         setInventory(data);
@@ -67,7 +66,9 @@ function Inventory({ i18n, setBreadcrumb }) {
   let cardHeader = hasContentLoading ? null : (
     <TabbedCardHeader>
       <RoutedTabs tabsArray={tabsArray} />
-      <CardCloseButton linkTo="/inventories" />
+      <CardActions>
+        <CardCloseButton linkTo="/inventories" />
+      </CardActions>
     </TabbedCardHeader>
   );
 
@@ -93,7 +94,7 @@ function Inventory({ i18n, setBreadcrumb }) {
   if (!hasContentLoading && contentError) {
     return (
       <PageSection>
-        <Card className="awx-c-card">
+        <Card>
           <ContentError error={contentError}>
             {contentError.response.status === 404 && (
               <span>
@@ -109,7 +110,7 @@ function Inventory({ i18n, setBreadcrumb }) {
 
   return (
     <PageSection>
-      <Card className="awx-c-card">
+      <Card>
         {cardHeader}
         <Switch>
           <Redirect

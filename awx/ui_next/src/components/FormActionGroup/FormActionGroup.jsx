@@ -2,25 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withI18n } from '@lingui/react';
 import { t } from '@lingui/macro';
-import { ActionGroup as PFActionGroup, Button } from '@patternfly/react-core';
-import styled from 'styled-components';
-
-const ActionGroup = styled(PFActionGroup)`
-  display: flex;
-  justify-content: flex-end;
-  --pf-c-form__group--m-action--MarginTop: 0;
-
-  .pf-c-form__actions {
-    display: grid;
-    gap: 24px;
-    grid-template-columns: auto auto;
-    margin: 0;
-
-    & > button {
-      margin: 0;
-    }
-  }
-`;
+import { ActionGroup, Button } from '@patternfly/react-core';
 
 const FormActionGroup = ({ onSubmit, submitDisabled, onCancel, i18n }) => (
   <ActionGroup>

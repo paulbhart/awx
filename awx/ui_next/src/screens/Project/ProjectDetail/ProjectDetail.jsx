@@ -12,7 +12,7 @@ import ContentLoading from '@components/ContentLoading';
 import DeleteButton from '@components/DeleteButton';
 import { DetailList, Detail, UserDateDetail } from '@components/DetailList';
 import ErrorDetail from '@components/ErrorDetail';
-import { CredentialChip } from '@components/Chip';
+import CredentialChip from '@components/CredentialChip';
 import { ProjectsAPI } from '@api';
 import { toTitleCase } from '@util/strings';
 
@@ -177,7 +177,7 @@ function ProjectDetail({ project, i18n }) {
       {deletionError && (
         <AlertModal
           isOpen={deletionError}
-          variant="danger"
+          variant="error"
           title={i18n._(t`Error!`)}
           onClose={() => setDeletionError(null)}
         >

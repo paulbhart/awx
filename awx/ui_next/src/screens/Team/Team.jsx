@@ -9,7 +9,7 @@ import {
   useLocation,
   useParams,
 } from 'react-router-dom';
-import { Card, PageSection } from '@patternfly/react-core';
+import { Card, CardActions, PageSection } from '@patternfly/react-core';
 import CardCloseButton from '@components/CardCloseButton';
 import { TabbedCardHeader } from '@components/Card';
 import RoutedTabs from '@components/RoutedTabs';
@@ -48,7 +48,9 @@ function Team({ i18n, setBreadcrumb }) {
   let cardHeader = (
     <TabbedCardHeader>
       <RoutedTabs tabsArray={tabsArray} />
-      <CardCloseButton linkTo="/teams" />
+      <CardActions>
+        <CardCloseButton linkTo="/teams" />
+      </CardActions>
     </TabbedCardHeader>
   );
 
@@ -59,7 +61,7 @@ function Team({ i18n, setBreadcrumb }) {
   if (!hasContentLoading && contentError) {
     return (
       <PageSection>
-        <Card className="awx-c-card">
+        <Card>
           <ContentError error={contentError}>
             {contentError.response.status === 404 && (
               <span>
@@ -75,7 +77,7 @@ function Team({ i18n, setBreadcrumb }) {
 
   return (
     <PageSection>
-      <Card className="awx-c-card">
+      <Card>
         {cardHeader}
         <Switch>
           <Redirect from="/teams/:id" to="/teams/:id/details" exact />

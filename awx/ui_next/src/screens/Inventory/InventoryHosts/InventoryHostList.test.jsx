@@ -104,48 +104,48 @@ describe('<InventoryHostList />', () => {
 
   test('should check and uncheck the row item', async () => {
     expect(
-      wrapper.find('PFDataListCheck[id="select-host-1"]').props().checked
+      wrapper.find('DataListCheck[id="select-host-1"]').props().checked
     ).toBe(false);
 
     await act(async () => {
-      wrapper.find('PFDataListCheck[id="select-host-1"]').invoke('onChange')(
+      wrapper.find('DataListCheck[id="select-host-1"]').invoke('onChange')(
         true
       );
     });
 
     wrapper.update();
     expect(
-      wrapper.find('PFDataListCheck[id="select-host-1"]').props().checked
+      wrapper.find('DataListCheck[id="select-host-1"]').props().checked
     ).toBe(true);
 
     await act(async () => {
-      wrapper.find('PFDataListCheck[id="select-host-1"]').invoke('onChange')(
+      wrapper.find('DataListCheck[id="select-host-1"]').invoke('onChange')(
         false
       );
     });
 
     wrapper.update();
     expect(
-      wrapper.find('PFDataListCheck[id="select-host-1"]').props().checked
+      wrapper.find('DataListCheck[id="select-host-1"]').props().checked
     ).toBe(false);
   });
 
   test('should check all row items when select all is checked', async () => {
-    wrapper.find('PFDataListCheck').forEach(el => {
+    wrapper.find('DataListCheck').forEach(el => {
       expect(el.props().checked).toBe(false);
     });
     await act(async () => {
       wrapper.find('Checkbox#select-all').invoke('onChange')(true);
     });
     wrapper.update();
-    wrapper.find('PFDataListCheck').forEach(el => {
+    wrapper.find('DataListCheck').forEach(el => {
       expect(el.props().checked).toBe(true);
     });
     await act(async () => {
       wrapper.find('Checkbox#select-all').invoke('onChange')(false);
     });
     wrapper.update();
-    wrapper.find('PFDataListCheck').forEach(el => {
+    wrapper.find('DataListCheck').forEach(el => {
       expect(el.props().checked).toBe(false);
     });
   });
@@ -154,14 +154,14 @@ describe('<InventoryHostList />', () => {
     HostsAPI.update.mockResolvedValueOnce({
       data: { ...mockHosts[1], enabled: false },
     });
-    expect(wrapper.find('PFSwitch[id="host-2-toggle"]').props().isChecked).toBe(
+    expect(wrapper.find('Switch[id="host-2-toggle"]').props().isChecked).toBe(
       true
     );
     await act(async () => {
-      wrapper.find('PFSwitch[id="host-2-toggle"]').invoke('onChange')();
+      wrapper.find('Switch[id="host-2-toggle"]').invoke('onChange')();
     });
     wrapper.update();
-    expect(wrapper.find('PFSwitch[id="host-2-toggle"]').props().isChecked).toBe(
+    expect(wrapper.find('Switch[id="host-2-toggle"]').props().isChecked).toBe(
       false
     );
     expect(HostsAPI.update).toHaveBeenCalledTimes(1);
@@ -170,7 +170,7 @@ describe('<InventoryHostList />', () => {
   test('should show error modal if host is not successfully toggled', async () => {
     HostsAPI.update.mockImplementationOnce(() => Promise.reject(new Error()));
     await act(async () => {
-      wrapper.find('PFSwitch[id="host-2-toggle"]').invoke('onChange')();
+      wrapper.find('Switch[id="host-2-toggle"]').invoke('onChange')();
     });
     wrapper.update();
     await waitForElement(
@@ -186,7 +186,7 @@ describe('<InventoryHostList />', () => {
 
   test('delete button is disabled if user does not have delete capabilities on a selected host', async () => {
     await act(async () => {
-      wrapper.find('PFDataListCheck[id="select-host-3"]').invoke('onChange')();
+      wrapper.find('DataListCheck[id="select-host-3"]').invoke('onChange')();
     });
     wrapper.update();
     expect(wrapper.find('ToolbarDeleteButton button').props().disabled).toBe(
@@ -197,7 +197,7 @@ describe('<InventoryHostList />', () => {
   test('should call api delete hosts for each selected host', async () => {
     HostsAPI.destroy = jest.fn();
     await act(async () => {
-      wrapper.find('PFDataListCheck[id="select-host-1"]').invoke('onChange')();
+      wrapper.find('DataListCheck[id="select-host-1"]').invoke('onChange')();
     });
     wrapper.update();
     await act(async () => {
@@ -220,7 +220,7 @@ describe('<InventoryHostList />', () => {
       })
     );
     await act(async () => {
-      wrapper.find('PFDataListCheck[id="select-host-1"]').invoke('onChange')();
+      wrapper.find('DataListCheck[id="select-host-1"]').invoke('onChange')();
     });
     wrapper.update();
     await act(async () => {
@@ -242,7 +242,7 @@ describe('<InventoryHostList />', () => {
       Promise.reject(new Error())
     );
     await act(async () => {
-      wrapper.find('PFDataListCheck[id="select-host-1"]').invoke('onChange')();
+      wrapper.find('DataListCheck[id="select-host-1"]').invoke('onChange')();
     });
     wrapper.update();
     await act(async () => {

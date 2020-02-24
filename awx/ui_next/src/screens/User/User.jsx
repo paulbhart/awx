@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withI18n } from '@lingui/react';
 import { t } from '@lingui/macro';
 import { Switch, Route, withRouter, Redirect, Link } from 'react-router-dom';
-import { Card, PageSection } from '@patternfly/react-core';
+import { Card, CardActions, PageSection } from '@patternfly/react-core';
 import { TabbedCardHeader } from '@components/Card';
 import CardCloseButton from '@components/CardCloseButton';
 import RoutedTabs from '@components/RoutedTabs';
@@ -81,7 +81,9 @@ class User extends Component {
     let cardHeader = (
       <TabbedCardHeader>
         <RoutedTabs tabsArray={tabsArray} />
-        <CardCloseButton linkTo="/users" />
+        <CardActions>
+          <CardCloseButton linkTo="/users" />
+        </CardActions>
       </TabbedCardHeader>
     );
 
@@ -96,7 +98,7 @@ class User extends Component {
     if (!hasContentLoading && contentError) {
       return (
         <PageSection>
-          <Card className="awx-c-card">
+          <Card>
             <ContentError error={contentError}>
               {contentError.response.status === 404 && (
                 <span>
@@ -112,7 +114,7 @@ class User extends Component {
 
     return (
       <PageSection>
-        <Card className="awx-c-card">
+        <Card>
           {cardHeader}
           <Switch>
             <Redirect from="/users/:id" to="/users/:id/details" exact />

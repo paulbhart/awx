@@ -17,8 +17,6 @@ import { getQSConfig, parseQueryString } from '@util/qs';
 import AddDropDownButton from '@components/AddDropDownButton';
 import InventoryListItem from './InventoryListItem';
 
-// The type value in const QS_CONFIG below does not have a space between job_inventory and
-// workflow_job_inventory so the params sent to the API match what the api expects.
 const QS_CONFIG = getQSConfig('inventory', {
   page: 1,
   page_size: 20,
@@ -204,13 +202,13 @@ class InventoriesList extends Component {
                 onSelectAll={this.handleSelectAll}
                 qsConfig={QS_CONFIG}
                 additionalControls={[
+                  ...(canAdd ? [addButton] : []),
                   <ToolbarDeleteButton
                     key="delete"
                     onDelete={this.handleInventoryDelete}
                     itemsToDelete={selected}
                     pluralizedItemName="Inventories"
                   />,
-                  canAdd && addButton,
                 ]}
               />
             )}
@@ -233,7 +231,7 @@ class InventoriesList extends Component {
         </Card>
         <AlertModal
           isOpen={deletionError}
-          variant="danger"
+          variant="error"
           title={i18n._(t`Error!`)}
           onClose={this.handleDeleteErrorClose}
         >

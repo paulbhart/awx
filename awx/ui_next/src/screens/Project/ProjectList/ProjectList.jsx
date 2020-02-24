@@ -200,15 +200,20 @@ class ProjectsList extends Component {
                   onSelectAll={this.handleSelectAll}
                   qsConfig={QS_CONFIG}
                   additionalControls={[
+                    ...(canAdd
+                      ? [
+                          <ToolbarAddButton
+                            key="add"
+                            linkTo={`${match.url}/add`}
+                          />,
+                        ]
+                      : []),
                     <ToolbarDeleteButton
                       key="delete"
                       onDelete={this.handleProjectDelete}
                       itemsToDelete={selected}
                       pluralizedItemName={i18n._(t`Projects`)}
                     />,
-                    canAdd ? (
-                      <ToolbarAddButton key="add" linkTo={`${match.url}/add`} />
-                    ) : null,
                   ]}
                 />
               )}
@@ -231,7 +236,7 @@ class ProjectsList extends Component {
         </PageSection>
         <AlertModal
           isOpen={deletionError}
-          variant="danger"
+          variant="error"
           title={i18n._(t`Error!`)}
           onClose={this.handleDeleteErrorClose}
         >

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { t } from '@lingui/macro';
 import { withI18n } from '@lingui/react';
-import { Card, PageSection } from '@patternfly/react-core';
+import { Card, CardActions, PageSection } from '@patternfly/react-core';
 import { Switch, Route, Redirect, withRouter, Link } from 'react-router-dom';
 import { TabbedCardHeader } from '@components/Card';
 import AppendBody from '@components/AppendBody';
@@ -9,7 +9,7 @@ import CardCloseButton from '@components/CardCloseButton';
 import ContentError from '@components/ContentError';
 import FullPage from '@components/FullPage';
 import RoutedTabs from '@components/RoutedTabs';
-import { WorkflowJobTemplatesAPI } from '@api';
+import { WorkflowJobTemplatesAPI, CredentialsAPI } from '@api';
 import WorkflowJobTemplateDetail from './WorkflowJobTemplateDetail';
 import { Visualizer } from './WorkflowJobTemplateVisualizer';
 
@@ -43,8 +43,25 @@ class WorkflowJobTemplate extends Component {
     this.setState({ contentError: null, hasContentLoading: true });
     try {
       const { data } = await WorkflowJobTemplatesAPI.readDetail(id);
-      setBreadcrumb(data);
+      if (data?.related?.webhook_key) {
+        const {
+          data: { webhook_key },
+        } = await WorkflowJobTemplatesAPI.readWebhookKey(id);
+        this.setState({ webHookKey: webhook_key });
+      }
+      if (data?.summary_fields?.webhook_credential) {
+        const {
+          data: {
+            summary_fields: { credential_type: name },
+          },
+        } = await CredentialsAPI.readDetail(
+          data.summary_fields.webhook_credential.id
+        );
+        data.summary_fields.webhook_credential.kind = name;
+      }
+
       this.setState({ template: data });
+      setBreadcrumb(data);
     } catch (err) {
       this.setState({ contentError: err });
     } finally {
@@ -54,7 +71,12 @@ class WorkflowJobTemplate extends Component {
 
   render() {
     const { i18n, location, match } = this.props;
-    const { contentError, hasContentLoading, template } = this.state;
+    const {
+      contentError,
+      hasContentLoading,
+      template,
+      webHookKey,
+    } = this.state;
 
     const tabsArray = [
       { name: i18n._(t`Details`), link: `${match.url}/details` },
@@ -68,7 +90,9 @@ class WorkflowJobTemplate extends Component {
     let cardHeader = hasContentLoading ? null : (
       <TabbedCardHeader>
         <RoutedTabs tabsArray={tabsArray} />
-        <CardCloseButton linkTo="/templates" />
+        <CardActions>
+          <CardCloseButton linkTo="/templates" />
+        </CardActions>
       </TabbedCardHeader>
     );
 
@@ -79,7 +103,7 @@ class WorkflowJobTemplate extends Component {
     if (!hasContentLoading && contentError) {
       return (
         <PageSection>
-          <Card className="awx-c-card">
+          <Card>
             <ContentError error={contentError}>
               {contentError.response.status === 404 && (
                 <span>
@@ -94,7 +118,7 @@ class WorkflowJobTemplate extends Component {
     }
 
     return (
-      <Card className="awx-c-card">
+      <Card>
         {cardHeader}
         <Switch>
           <Redirect
@@ -108,8 +132,8 @@ class WorkflowJobTemplate extends Component {
               path="/templates/workflow_job_template/:id/details"
               render={() => (
                 <WorkflowJobTemplateDetail
-                  hasTemplateLoading={hasContentLoading}
                   template={template}
+                  webHookKey={webHookKey}
                 />
               )}
             />

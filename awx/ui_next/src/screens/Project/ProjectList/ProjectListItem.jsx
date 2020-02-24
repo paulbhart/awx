@@ -2,6 +2,10 @@ import React, { Fragment } from 'react';
 import { string, bool, func } from 'prop-types';
 import { withI18n } from '@lingui/react';
 import {
+  Button,
+  DataListAction as _DataListAction,
+  DataListCell,
+  DataListCheck,
   DataListItem,
   DataListItemRow,
   DataListItemCells,
@@ -10,18 +14,20 @@ import {
 import { t } from '@lingui/macro';
 import { Link } from 'react-router-dom';
 import { PencilAltIcon, SyncIcon } from '@patternfly/react-icons';
+import styled from 'styled-components';
 
-import ActionButtonCell from '@components/ActionButtonCell';
 import ClipboardCopyButton from '@components/ClipboardCopyButton';
-import DataListCell from '@components/DataListCell';
-import DataListCheck from '@components/DataListCheck';
-import ListActionButton from '@components/ListActionButton';
 import ProjectSyncButton from '../shared/ProjectSyncButton';
-import { StatusIcon } from '@components/Sparkline';
-import VerticalSeparator from '@components/VerticalSeparator';
+import StatusIcon from '@components/StatusIcon';
 import { toTitleCase } from '@util/strings';
 import { Project } from '@types';
 
+const DataListAction = styled(_DataListAction)`
+  align-items: center;
+  display: grid;
+  grid-gap: 16px;
+  grid-template-columns: repeat(2, 40px);
+`;
 class ProjectListItem extends React.Component {
   static propTypes = {
     project: Project.isRequired,
@@ -74,8 +80,7 @@ class ProjectListItem extends React.Component {
           />
           <DataListItemCells
             dataListCells={[
-              <DataListCell key="divider">
-                <VerticalSeparator />
+              <DataListCell key="status" isFilled={false}>
                 {project.summary_fields.last_job && (
                   <Tooltip
                     position="top"
@@ -93,11 +98,9 @@ class ProjectListItem extends React.Component {
                     </Link>
                   </Tooltip>
                 )}
-                <Link
-                  id={labelId}
-                  to={`${detailUrl}`}
-                  css={{ marginLeft: '10px' }}
-                >
+              </DataListCell>,
+              <DataListCell key="name">
+                <Link id={labelId} to={`${detailUrl}`}>
                   <b>{project.name}</b>
                 </Link>
               </DataListCell>,
@@ -116,32 +119,41 @@ class ProjectListItem extends React.Component {
                   />
                 ) : null}
               </DataListCell>,
-              <ActionButtonCell lastcolumn="true" key="action">
-                {project.summary_fields.user_capabilities.start && (
-                  <Tooltip content={i18n._(t`Sync Project`)} position="top">
-                    <ProjectSyncButton projectId={project.id}>
-                      {handleSync => (
-                        <ListActionButton variant="plain" onClick={handleSync}>
-                          <SyncIcon />
-                        </ListActionButton>
-                      )}
-                    </ProjectSyncButton>
-                  </Tooltip>
-                )}
-                {project.summary_fields.user_capabilities.edit && (
-                  <Tooltip content={i18n._(t`Edit Project`)} position="top">
-                    <ListActionButton
-                      variant="plain"
-                      component={Link}
-                      to={`/projects/${project.id}/edit`}
-                    >
-                      <PencilAltIcon />
-                    </ListActionButton>
-                  </Tooltip>
-                )}
-              </ActionButtonCell>,
             ]}
           />
+          <DataListAction
+            aria-label="actions"
+            aria-labelledby={labelId}
+            id={labelId}
+          >
+            {project.summary_fields.user_capabilities.start && (
+              <Tooltip content={i18n._(t`Sync Project`)} position="top">
+                <ProjectSyncButton projectId={project.id}>
+                  {handleSync => (
+                    <Button
+                      css="grid-column: 1"
+                      variant="plain"
+                      onClick={handleSync}
+                    >
+                      <SyncIcon />
+                    </Button>
+                  )}
+                </ProjectSyncButton>
+              </Tooltip>
+            )}
+            {project.summary_fields.user_capabilities.edit && (
+              <Tooltip content={i18n._(t`Edit Project`)} position="top">
+                <Button
+                  css="grid-column: 2"
+                  variant="plain"
+                  component={Link}
+                  to={`/projects/${project.id}/edit`}
+                >
+                  <PencilAltIcon />
+                </Button>
+              </Tooltip>
+            )}
+          </DataListAction>
         </DataListItemRow>
       </DataListItem>
     );

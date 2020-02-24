@@ -3,6 +3,10 @@ import { string, bool, func } from 'prop-types';
 import { withI18n } from '@lingui/react';
 import { t } from '@lingui/macro';
 import {
+  Button,
+  DataListAction as _DataListAction,
+  DataListCell,
+  DataListCheck,
   DataListItem,
   DataListItemRow,
   DataListItemCells,
@@ -11,14 +15,17 @@ import {
 import { Link } from 'react-router-dom';
 import { PencilAltIcon } from '@patternfly/react-icons';
 
-import ActionButtonCell from '@components/ActionButtonCell';
-import DataListCell from '@components/DataListCell';
-import DataListCheck from '@components/DataListCheck';
-import ListActionButton from '@components/ListActionButton';
-import { Sparkline } from '@components/Sparkline';
-import Switch from '@components/Switch';
-import VerticalSeparator from '@components/VerticalSeparator';
+import Sparkline from '@components/Sparkline';
 import { Host } from '@types';
+import styled from 'styled-components';
+import HostToggle from '../shared/HostToggle';
+
+const DataListAction = styled(_DataListAction)`
+  align-items: center;
+  display: grid;
+  grid-gap: 24px;
+  grid-template-columns: min-content 40px;
+`;
 
 class HostListItem extends React.Component {
   static propTypes = {
@@ -29,15 +36,7 @@ class HostListItem extends React.Component {
   };
 
   render() {
-    const {
-      host,
-      isSelected,
-      onSelect,
-      detailUrl,
-      onToggleHost,
-      toggleLoading,
-      i18n,
-    } = this.props;
+    const { host, isSelected, onSelect, detailUrl, i18n } = this.props;
 
     const recentPlaybookJobs = host.summary_fields.recent_jobs.map(job => ({
       ...job,
@@ -57,7 +56,6 @@ class HostListItem extends React.Component {
           <DataListItemCells
             dataListCells={[
               <DataListCell key="name">
-                <VerticalSeparator />
                 <Link to={`${detailUrl}`}>
                   <b>{host.name}</b>
                 </Link>
@@ -68,9 +66,7 @@ class HostListItem extends React.Component {
               <DataListCell key="inventory">
                 {host.summary_fields.inventory && (
                   <Fragment>
-                    <b style={{ marginRight: '20px' }}>
-                      {i18n._(t`Inventory`)}
-                    </b>
+                    <b css="margin-right: 24px">{i18n._(t`Inventory`)}</b>
                     <Link
                       to={`/inventories/${
                         host.summary_fields.inventory.kind === 'smart'
@@ -83,40 +79,42 @@ class HostListItem extends React.Component {
                   </Fragment>
                 )}
               </DataListCell>,
-              <ActionButtonCell lastcolumn="true" key="action">
-                <Tooltip
-                  content={i18n._(
-                    t`Indicates if a host is available and should be included in running jobs.  For hosts that are part of an external inventory, this may be reset by the inventory sync process.`
-                  )}
-                  position="top"
-                >
-                  <Switch
-                    id={`host-${host.id}-toggle`}
-                    label={i18n._(t`On`)}
-                    labelOff={i18n._(t`Off`)}
-                    isChecked={host.enabled}
-                    isDisabled={
-                      toggleLoading ||
-                      !host.summary_fields.user_capabilities.edit
-                    }
-                    onChange={() => onToggleHost(host)}
-                    aria-label={i18n._(t`Toggle host`)}
-                  />
-                </Tooltip>
+              <DataListCell key="enable" alignRight isFilled={false}>
+                <HostToggle host={host} />
+              </DataListCell>,
+              <DataListCell key="edit" alignRight isFilled={false}>
                 {host.summary_fields.user_capabilities.edit && (
                   <Tooltip content={i18n._(t`Edit Host`)} position="top">
-                    <ListActionButton
+                    <Button
                       variant="plain"
                       component={Link}
                       to={`/hosts/${host.id}/edit`}
                     >
                       <PencilAltIcon />
-                    </ListActionButton>
+                    </Button>
                   </Tooltip>
                 )}
-              </ActionButtonCell>,
+              </DataListCell>,
             ]}
           />
+          <DataListAction
+            aria-label="actions"
+            aria-labelledby={labelId}
+            id={labelId}
+          >
+            <HostToggle host={host} />
+            {host.summary_fields.user_capabilities.edit && (
+              <Tooltip content={i18n._(t`Edit Host`)} position="top">
+                <Button
+                  variant="plain"
+                  component={Link}
+                  to={`/hosts/${host.id}/edit`}
+                >
+                  <PencilAltIcon />
+                </Button>
+              </Tooltip>
+            )}
+          </DataListAction>
         </DataListItemRow>
       </DataListItem>
     );

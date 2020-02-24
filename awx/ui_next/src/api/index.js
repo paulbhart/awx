@@ -17,12 +17,15 @@ import Organizations from './models/Organizations';
 import Projects from './models/Projects';
 import ProjectUpdates from './models/ProjectUpdates';
 import Root from './models/Root';
+import Schedules from './models/Schedules';
 import SystemJobs from './models/SystemJobs';
 import Teams from './models/Teams';
 import UnifiedJobTemplates from './models/UnifiedJobTemplates';
 import UnifiedJobs from './models/UnifiedJobs';
 import Users from './models/Users';
+import WorkflowApprovalTemplates from './models/WorkflowApprovalTemplates';
 import WorkflowJobs from './models/WorkflowJobs';
+import WorkflowJobTemplateNodes from './models/WorkflowJobTemplateNodes';
 import WorkflowJobTemplates from './models/WorkflowJobTemplates';
 
 const AdHocCommandsAPI = new AdHocCommands();
@@ -44,12 +47,15 @@ const OrganizationsAPI = new Organizations();
 const ProjectsAPI = new Projects();
 const ProjectUpdatesAPI = new ProjectUpdates();
 const RootAPI = new Root();
+const SchedulesAPI = new Schedules();
 const SystemJobsAPI = new SystemJobs();
 const TeamsAPI = new Teams();
 const UnifiedJobTemplatesAPI = new UnifiedJobTemplates();
 const UnifiedJobsAPI = new UnifiedJobs();
 const UsersAPI = new Users();
+const WorkflowApprovalTemplatesAPI = new WorkflowApprovalTemplates();
 const WorkflowJobsAPI = new WorkflowJobs();
+const WorkflowJobTemplateNodesAPI = new WorkflowJobTemplateNodes();
 const WorkflowJobTemplatesAPI = new WorkflowJobTemplates();
 
 export {
@@ -72,11 +78,14 @@ export {
   ProjectsAPI,
   ProjectUpdatesAPI,
   RootAPI,
+  SchedulesAPI,
   SystemJobsAPI,
   TeamsAPI,
   UnifiedJobTemplatesAPI,
   UnifiedJobsAPI,
   UsersAPI,
+  WorkflowApprovalTemplatesAPI,
   WorkflowJobsAPI,
+  WorkflowJobTemplateNodesAPI,
   WorkflowJobTemplatesAPI,
 };

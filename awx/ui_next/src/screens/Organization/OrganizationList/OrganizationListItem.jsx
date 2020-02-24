@@ -4,39 +4,30 @@ import { withI18n } from '@lingui/react';
 import { t } from '@lingui/macro';
 import {
   Badge as PFBadge,
+  Button,
+  DataListAction,
+  DataListCell,
+  DataListCheck,
   DataListItem,
-  DataListItemRow,
   DataListItemCells,
+  DataListItemRow,
   Tooltip,
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { PencilAltIcon } from '@patternfly/react-icons';
 
-import ActionButtonCell from '@components/ActionButtonCell';
-import DataListCell from '@components/DataListCell';
-import DataListCheck from '@components/DataListCheck';
-import ListActionButton from '@components/ListActionButton';
-import VerticalSeparator from '@components/VerticalSeparator';
 import { Organization } from '@types';
 
 const Badge = styled(PFBadge)`
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  margin-left: 10px;
+  margin-left: 8px;
 `;
 
 const ListGroup = styled.span`
-  display: flex;
-  margin-left: 40px;
+  margin-left: 24px;
 
-  @media screen and (min-width: 768px) {
-    margin-left: 20px;
-
-    &:first-of-type {
-      margin-left: 0;
-    }
+  &:first-of-type {
+    margin-left: 0;
   }
 `;
 
@@ -64,7 +55,6 @@ function OrganizationListItem({
         <DataListItemCells
           dataListCells={[
             <DataListCell key="divider">
-              <VerticalSeparator />
               <span id={labelId}>
                 <Link to={`${detailUrl}`}>
                   <b>{organization.name}</b>
@@ -85,21 +75,25 @@ function OrganizationListItem({
                 </Badge>
               </ListGroup>
             </DataListCell>,
-            <ActionButtonCell lastcolumn="true" key="action">
-              {organization.summary_fields.user_capabilities.edit && (
-                <Tooltip content={i18n._(t`Edit Organization`)} position="top">
-                  <ListActionButton
-                    variant="plain"
-                    component={Link}
-                    to={`/organizations/${organization.id}/edit`}
-                  >
-                    <PencilAltIcon />
-                  </ListActionButton>
-                </Tooltip>
-              )}
-            </ActionButtonCell>,
           ]}
         />
+        <DataListAction
+          aria-label="actions"
+          aria-labelledby={labelId}
+          id={labelId}
+        >
+          {organization.summary_fields.user_capabilities.edit && (
+            <Tooltip content={i18n._(t`Edit Organization`)} position="top">
+              <Button
+                variant="plain"
+                component={Link}
+                to={`/organizations/${organization.id}/edit`}
+              >
+                <PencilAltIcon />
+              </Button>
+            </Tooltip>
+          )}
+        </DataListAction>
       </DataListItemRow>
     </DataListItem>
   );

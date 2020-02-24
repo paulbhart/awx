@@ -4,7 +4,7 @@ import CodeMirrorInput from '@components/CodeMirrorInput';
 import ContentEmpty from '@components/ContentEmpty';
 import PropTypes from 'prop-types';
 import { DetailList, Detail } from '@components/DetailList';
-import { StatusIcon } from '@components/Sparkline';
+import StatusIcon from '@components/StatusIcon';
 import { withI18n } from '@lingui/react';
 import { t } from '@lingui/macro';
 import styled from 'styled-components';
@@ -26,10 +26,9 @@ const Modal = styled(PFModal)`
 
 const HostNameDetailValue = styled.div`
   align-items: center;
-  display: inline-flex;
-  .at-c-statusIcon {
-    margin-right: 10px;
-  }
+  display: inline-grid;
+  grid-gap: 10px;
+  grid-template-columns: auto auto;
 `;
 
 const Tabs = styled(PFTabs)`

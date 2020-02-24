@@ -164,7 +164,7 @@ class NotificationList extends Component {
       }
       this.setState(stateUpdateFunction);
     } catch (err) {
-      this.setState({ toggleError: true });
+      this.setState({ toggleError: err });
     } finally {
       this.setState({ toggleLoading: false });
     }
@@ -250,7 +250,7 @@ class NotificationList extends Component {
           )}
         />
         <AlertModal
-          variant="danger"
+          variant="error"
           title={i18n._(t`Error!`)}
           isOpen={toggleError && !toggleLoading}
           onClose={this.handleNotificationErrorClose}

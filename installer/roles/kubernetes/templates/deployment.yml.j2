@@ -4,6 +4,16 @@ kind: ServiceAccount
 metadata:
   name: awx
   namespace: {{ kubernetes_namespace }}
+{% if kubernetes_service_account_annotations is defined %}
+  annotations:
+{% for key, value in kubernetes_service_account_annotations.items() %}
+    {{ key }}: {{ value }}
+{% endfor %}
+{% endif %}
+{% if kubernetes_image_pull_secrets is defined %}
+imagePullSecrets:
+  - name: "{{ kubernetes_image_pull_secrets }}"
+{% endif %}
 
 ---
 kind: Service
@@ -136,6 +146,10 @@ kind: StatefulSet
 metadata:
   name: {{ kubernetes_deployment_name }}
   namespace: {{ kubernetes_namespace }}
+{% if openshift_host is defined %}
+  labels:
+    app: {{ kubernetes_deployment_name }}
+{% endif %}
 spec:
   serviceName: {{ kubernetes_deployment_name }}
   replicas: 1
@@ -285,6 +299,10 @@ spec:
           env:
             - name: AWX_SKIP_MIGRATIONS
               value: "1"
+            - name: MY_POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
           resources:
             requests:
               memory: "{{ task_mem_request }}Gi"

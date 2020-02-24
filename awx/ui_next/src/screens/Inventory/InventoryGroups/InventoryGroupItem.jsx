@@ -5,19 +5,17 @@ import { t } from '@lingui/macro';
 import { Group } from '@types';
 
 import {
+  Button,
+  DataListAction,
+  DataListCell,
+  DataListCheck,
   DataListItem,
-  DataListItemRow,
   DataListItemCells,
+  DataListItemRow,
   Tooltip,
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import { PencilAltIcon } from '@patternfly/react-icons';
-
-import ActionButtonCell from '@components/ActionButtonCell';
-import DataListCell from '@components/DataListCell';
-import DataListCheck from '@components/DataListCheck';
-import ListActionButton from '@components/ListActionButton';
-import VerticalSeparator from '@components/VerticalSeparator';
 
 function InventoryGroupItem({
   i18n,
@@ -41,27 +39,26 @@ function InventoryGroupItem({
         />
         <DataListItemCells
           dataListCells={[
-            <DataListCell key="divider">
-              <VerticalSeparator />
+            <DataListCell key="name">
               <Link to={`${detailUrl}`} id={labelId}>
                 <b>{group.name}</b>
               </Link>
             </DataListCell>,
-            <ActionButtonCell lastcolumn="true" key="action">
-              {group.summary_fields.user_capabilities.edit && (
-                <Tooltip content={i18n._(t`Edit Group`)} position="top">
-                  <ListActionButton
-                    variant="plain"
-                    component={Link}
-                    to={editUrl}
-                  >
-                    <PencilAltIcon />
-                  </ListActionButton>
-                </Tooltip>
-              )}
-            </ActionButtonCell>,
           ]}
         />
+        <DataListAction
+          aria-label="actions"
+          aria-labelledby={labelId}
+          id={labelId}
+        >
+          {group.summary_fields.user_capabilities.edit && (
+            <Tooltip content={i18n._(t`Edit Group`)} position="top">
+              <Button variant="plain" component={Link} to={editUrl}>
+                <PencilAltIcon />
+              </Button>
+            </Tooltip>
+          )}
+        </DataListAction>
       </DataListItemRow>
     </DataListItem>
   );

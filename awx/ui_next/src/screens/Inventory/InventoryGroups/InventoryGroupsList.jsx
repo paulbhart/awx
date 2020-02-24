@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { TrashAltIcon } from '@patternfly/react-icons';
 import { withRouter } from 'react-router-dom';
 import { withI18n } from '@lingui/react';
 import { t } from '@lingui/macro';
@@ -12,7 +11,6 @@ import DataListToolbar from '@components/DataListToolbar';
 import PaginatedDataList, {
   ToolbarAddButton,
 } from '@components/PaginatedDataList';
-import styled from 'styled-components';
 import InventoryGroupItem from './InventoryGroupItem';
 import InventoryGroupsDeleteModal from '../shared/InventoryGroupsDeleteModal';
 
@@ -21,21 +19,6 @@ const QS_CONFIG = getQSConfig('group', {
   page_size: 20,
   order_by: 'name',
 });
-
-const DeleteButton = styled(Button)`
-  padding: 5px 8px;
-
-  &:hover {
-    background-color: #d9534f;
-    color: white;
-  }
-
-  &[disabled] {
-    color: var(--pf-c-button--m-plain--Color);
-    pointer-events: initial;
-    cursor: not-allowed;
-  }
-`;
 
 function cannotDelete(item) {
   return !item.summary_fields.user_capabilities.delete;
@@ -224,26 +207,28 @@ function InventoryGroupsList({ i18n, location, match }) {
             onSelectAll={handleSelectAll}
             qsConfig={QS_CONFIG}
             additionalControls={[
+              ...(canAdd
+                ? [
+                    <ToolbarAddButton
+                      key="add"
+                      linkTo={`/inventories/inventory/${inventoryId}/groups/add`}
+                    />,
+                  ]
+                : []),
               <Tooltip content={renderTooltip()} position="top" key="delete">
                 <div>
-                  <DeleteButton
-                    variant="plain"
+                  <Button
+                    variant="danger"
                     aria-label={i18n._(t`Delete`)}
                     onClick={toggleModal}
                     isDisabled={
                       selected.length === 0 || selected.some(cannotDelete)
                     }
                   >
-                    <TrashAltIcon />
-                  </DeleteButton>
+                    {i18n._(t`Delete`)}
+                  </Button>
                 </div>
               </Tooltip>,
-              canAdd && (
-                <ToolbarAddButton
-                  key="add"
-                  linkTo={`/inventories/inventory/${inventoryId}/groups/add`}
-                />
-              ),
             ]}
           />
         )}
@@ -259,7 +244,7 @@ function InventoryGroupsList({ i18n, location, match }) {
       {deletionError && (
         <AlertModal
           isOpen={deletionError}
-          variant="danger"
+          variant="error"
           title={i18n._(t`Error!`)}
           onClose={() => setDeletionError(null)}
         >

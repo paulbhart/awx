@@ -9,10 +9,10 @@ import AlertModal from '@components/AlertModal';
 import ErrorDetail from '@components/ErrorDetail';
 import { DetailList, Detail, UserDateDetail } from '@components/DetailList';
 import { VariablesDetail } from '@components/CodeMirrorInput';
-import { Sparkline } from '@components/Sparkline';
+import Sparkline from '@components/Sparkline';
 import DeleteButton from '@components/DeleteButton';
-import Switch from '@components/Switch';
 import { HostsAPI } from '@api';
+import HostToggle from '../shared/HostToggle';
 
 function HostDetail({ host, i18n, onUpdateHost }) {
   const {
@@ -21,7 +21,6 @@ function HostDetail({ host, i18n, onUpdateHost }) {
     id,
     modified,
     name,
-    enabled,
     summary_fields: {
       inventory,
       recent_jobs,
@@ -37,24 +36,8 @@ function HostDetail({ host, i18n, onUpdateHost }) {
   const { id: inventoryId, hostId: inventoryHostId } = useParams();
   const [isLoading, setIsloading] = useState(false);
   const [deletionError, setDeletionError] = useState(false);
-  const [toggleLoading, setToggleLoading] = useState(false);
-  const [toggleError, setToggleError] = useState(false);
 
   const recentPlaybookJobs = recent_jobs.map(job => ({ ...job, type: 'job' }));
-
-  const handleHostToggle = async () => {
-    setToggleLoading(true);
-    try {
-      const { data } = await HostsAPI.update(id, {
-        enabled: !enabled,
-      });
-      onUpdateHost(data);
-    } catch (err) {
-      setToggleError(err);
-    } finally {
-      setToggleLoading(false);
-    }
-  };
 
   const handleHostDelete = async () => {
     setIsloading(true);
@@ -67,24 +50,11 @@ function HostDetail({ host, i18n, onUpdateHost }) {
     }
   };
 
-  if (toggleError && !toggleLoading) {
-    return (
-      <AlertModal
-        variant="danger"
-        title={i18n._(t`Error!`)}
-        isOpen={toggleError && !toggleLoading}
-        onClose={() => setToggleError(false)}
-      >
-        {i18n._(t`Failed to toggle host.`)}
-        <ErrorDetail error={toggleError} />
-      </AlertModal>
-    );
-  }
   if (!isLoading && deletionError) {
     return (
       <AlertModal
         isOpen={deletionError}
-        variant="danger"
+        variant="error"
         title={i18n._(t`Error!`)}
         onClose={() => setDeletionError(false)}
       >
@@ -95,20 +65,19 @@ function HostDetail({ host, i18n, onUpdateHost }) {
   }
   return (
     <CardBody>
-      <Switch
+      <HostToggle
+        host={host}
+        onToggle={enabled =>
+          onUpdateHost({
+            ...host,
+            enabled,
+          })
+        }
         css="padding-bottom: 40px"
-        id={`host-${id}-toggle`}
-        label={i18n._(t`On`)}
-        labelOff={i18n._(t`Off`)}
-        isChecked={enabled}
-        isDisabled={!user_capabilities.edit}
-        onChange={() => handleHostToggle()}
-        aria-label={i18n._(t`Toggle Host`)}
       />
       <DetailList gutter="sm">
         <Detail label={i18n._(t`Name`)} value={name} />
         <Detail
-          css="display: flex; flex: 1;"
           value={<Sparkline jobs={recentPlaybookJobs} />}
           label={i18n._(t`Activity`)}
         />

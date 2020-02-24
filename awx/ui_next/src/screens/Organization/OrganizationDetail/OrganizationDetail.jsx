@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import { withI18n } from '@lingui/react';
 import { t } from '@lingui/macro';
-import { Button } from '@patternfly/react-core';
+import { Button, Chip, ChipGroup } from '@patternfly/react-core';
 import { OrganizationsAPI } from '@api';
 import { DetailList, Detail, UserDateDetail } from '@components/DetailList';
 import { CardBody, CardActionsRow } from '@components/Card';
-import { ChipGroup, Chip } from '@components/Chip';
 import AlertModal from '@components/AlertModal';
 import ContentError from '@components/ContentError';
 import ContentLoading from '@components/ContentLoading';
@@ -133,7 +132,7 @@ function OrganizationDetail({ i18n, organization }) {
       {deletionError && (
         <AlertModal
           isOpen={deletionError}
-          variant="danger"
+          variant="error"
           title={i18n._(t`Error!`)}
           onClose={() => setDeletionError(null)}
         >

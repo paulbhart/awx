@@ -17,7 +17,7 @@ describe('<ProjectEdit />', () => {
     scm_url: 'https://foo.bar',
     scm_clean: true,
     credential: 100,
-    local_path: '',
+    local_path: 'bar',
     organization: 2,
     scm_update_on_launch: true,
     scm_update_cache_timeout: 3,
@@ -120,7 +120,10 @@ describe('<ProjectEdit />', () => {
       project_local_paths: [],
       project_base_dir: 'foo/bar',
     };
-    ProjectsAPI.update.mockImplementation(() => Promise.reject(new Error()));
+    const error = new Error('oops');
+    const realConsoleError = global.console.error;
+    global.console.error = jest.fn();
+    ProjectsAPI.update.mockImplementation(() => Promise.reject(error));
     await act(async () => {
       wrapper = mountWithContexts(
         <ProjectEdit project={{ ...projectData, scm_type: 'manual' }} />,
@@ -135,7 +138,8 @@ describe('<ProjectEdit />', () => {
     });
     wrapper.update();
     expect(ProjectsAPI.update).toHaveBeenCalledTimes(1);
-    expect(wrapper.find('ProjectEdit .formSubmitError').length).toBe(1);
+    expect(wrapper.find('ProjectForm').prop('submitError')).toEqual(error);
+    global.console.error = realConsoleError;
   });
 
   test('CardBody cancel button should navigate to project details', async () => {
